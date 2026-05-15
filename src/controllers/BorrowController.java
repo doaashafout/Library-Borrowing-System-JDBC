@@ -207,20 +207,34 @@ public class BorrowController implements Initializable {
     private void searchbyIds(ActionEvent event) {
         Integer bookId = booksCombobox.getValue();
         Integer studentId = studentsCombobox.getValue();
-        if(bookId == null && studentId == null){
+
+        if (bookId == null && studentId == null) {
             showWarningAlert("No Selection", "No IDs Selected",
-                    "Please select at least one ID (book or student) to search");
+                    "Please select book id or student id");
             return;
         }
+
         List<Borrow> all = borrowdao.findAll();
-        List<Borrow> filtered = new ArrayList<>();
-        for(Borrow b : all){
-            if((bookId == null || b.getBookId() == bookId) && 
-               (studentId == null || b.getStudentId() == studentId)){
-                filtered.add(b);
+        List<Borrow> result = new ArrayList<>();
+
+        for (Borrow b : all) {
+
+            if (bookId != null && studentId != null) {
+                if (b.getBookId() == bookId && b.getStudentId() == studentId) {
+                    result.add(b);
+                }
+            } else if (bookId != null) {
+                if (b.getBookId() == bookId) {
+                    result.add(b);
+                }
+            } else if (studentId != null) {
+                if (b.getStudentId() == studentId) {
+                    result.add(b);
+                }
             }
         }
-        table.getItems().setAll(filtered);
+
+        table.getItems().setAll(result);
     }
     
     
